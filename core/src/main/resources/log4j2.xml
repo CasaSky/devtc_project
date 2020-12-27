@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="WARN" packages="org.apache.logging.log4j.core,io.sentry.log4j2">
+    <Appenders>
+        <Console name="consoleAppender" target="SYSTEM_OUT">
+
+            <!-- %d outputs the date -->
+            <!-- %p for showing the log level -->
+            <!-- %t outputs the thread name -->
+            <!-- %c{precision} outputs the class name for example: %c{-10} Class Path: org.apache.commons.Foo	Output: org.apache.commons.Foo -->
+            <!--    %c{1} outputs only the class name -->
+            <!-- %msg outputs the application supplied message associated with the logging event -->
+            <!-- %n outputs the platform dependent line separator character or characters -->
+            <!-- %throwable outputs the Throwable trace bound -->
+            <PatternLayout
+                    pattern="%d|%highlight{%p}{FATAL=bg_red, ERROR=red, WARN=yellow, INFO=green}|%t|%c{1}|%msg%n%throwable"/>
+        </Console>
+
+        <Sentry name="Sentry" />
+
+    </Appenders>
+    <Loggers>
+
+        <!-- for project domain logs, output only logs starting from debug level -->
+        <Logger name="com.casasky" level="debug"/>
+
+        <!-- for hibernate domain, output only logs starting from the warning level -->
+        <Logger name="org.hibernate" level="warn"/>
+
+        <!-- for everything else output from the info level logs -->
+        <Root level="info">
+            <AppenderRef ref="Sentry"/>
+
+            <AppenderRef ref="consoleAppender"/>
+        </Root>
+    </Loggers>
+</Configuration>

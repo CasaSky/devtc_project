@@ -1,0 +1,4 @@
+devtc is a Developer Toolchain project which provides an easy to use and a standardized system where all developers can collaborate, maintain their own set of tools and define instructions to simplify the installation and update process.   
+A developer that maintain a certain tool can control auto detected new versions in order to guarantee the reliability and usability of the system.   
+The system detects the provided set of installation rules and steps defined from a maintainer of a certain tool, checks for new releases and provide these to the network.  
+Developers can review these tools in order to present their experience and help others to get the best quality.  
