@@ -12,7 +12,8 @@ create table tool_schema.tool
 (
     id bigserial,
     name text collate "C" not null,
-    primary key (id)
+    primary key (id),
+    constraint const_tool_name unique (name)
 );
 
 create table tool_schema.maintenance

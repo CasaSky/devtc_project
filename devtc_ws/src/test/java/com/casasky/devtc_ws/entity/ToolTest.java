@@ -13,7 +13,7 @@ class ToolTest {
 
         var name = "test";
         var tool = new Tool(name);
-        assertThat(tool.name).isEqualTo(name);
+        assertThat(tool.getName()).isEqualTo(name);
 
     }
 

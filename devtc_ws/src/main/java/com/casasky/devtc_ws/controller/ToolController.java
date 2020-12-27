@@ -2,6 +2,7 @@ package com.casasky.devtc_ws.controller;
 
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import com.casasky.devtc_ws.entity.Tool;
 import com.casasky.devtc_ws.service.ToolService;
@@ -35,9 +36,14 @@ public class ToolController {
 
 
     @GetMapping
-    public ResponseEntity<List<Tool>> tools() {
+    public ResponseEntity<List<ToolDto>> tools() {
 
-        return ResponseEntity.ok(toolService.findAll(Tool.class));
+        var tools = toolService.findAll(Tool.class)
+                .stream()
+                .map(t -> new ToolDto(t.getName()))
+                .collect(Collectors.toUnmodifiableList());
+
+        return ResponseEntity.ok(tools);
 
     }
 
