@@ -25,6 +25,7 @@
 
         <!-- dependencies -->
         <dependency.spring-boot.version>2.4.1</dependency.spring-boot.version>
+        <dependency.lombok.version>1.18.16</dependency.lombok.version>
         <dependency.postgresql.version>42.2.18</dependency.postgresql.version>
         <dependency.sentry.version>3.2.0</dependency.sentry.version>
 
@@ -57,6 +58,11 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-log4j2</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
         </dependency>
 
         <dependency>
@@ -103,6 +109,13 @@
                 <version>${dependency.spring-boot.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>org.projectlombok</groupId>
+                <artifactId>lombok</artifactId>
+                <version>${dependency.lombok.version}</version>
+                <scope>provided</scope>
             </dependency>
 
             <dependency>
