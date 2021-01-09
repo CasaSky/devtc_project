@@ -37,7 +37,7 @@ class MaintenanceTest {
                 .toolId(toolId)
                 .maintainerName(maintainerName)
                 .docsUrl(docsUrl)
-                .sourceUrlTemplate(sourceUrlTemplate)
+                .downloadUrlTemplate(sourceUrlTemplate)
                 .releaseVersion(releaseVersion)
                 .releaseVersionFormat(releaseVersionFormat)
                 .supportedPlatformCodes(supportedPlatformCodes)
@@ -52,7 +52,7 @@ class MaintenanceTest {
         assertThat(maintenance.getDocsUrl()).isEqualTo(docsUrl);
         assertThat(maintenance.getOpenTime()).isBetween(preOpenTime, postOpenTime);
         assertThat(maintenance.getCloseTime()).isNull();
-        assertThat(maintenance.getSourceUrlTemplate()).isEqualTo(sourceUrlTemplate);
+        assertThat(maintenance.getDownloadUrlTemplate()).isEqualTo(sourceUrlTemplate);
         assertThat(maintenance.getReleaseVersion()).isEqualTo(releaseVersion);
         assertThat(maintenance.getReleaseVersionFormat()).isEqualTo(releaseVersionFormat);
         assertThat(maintenance.getSupportedPlatformCodes()).isEqualTo(supportedPlatformCodes);

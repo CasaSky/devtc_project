@@ -6,6 +6,10 @@ import com.casasky.devtc_ws.entity.Tool;
 public class ToolDto {
 
     public String name;
+    public String lastReleaseVersion;
+    public String downloadUrl;
+    public String packageExtension;
+    public String packageBinaryPath;
 
 
     protected ToolDto() {

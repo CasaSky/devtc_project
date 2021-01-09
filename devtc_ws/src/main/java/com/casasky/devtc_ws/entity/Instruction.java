@@ -7,9 +7,20 @@ import lombok.Getter;
 
 @Getter
 @Builder
+// TODO must be immutable
 class Instruction {
 
-    private final String description;
-    private final String command;
+    private String description;
+    private String command;
+
+
+    protected Instruction() {
+    }
+
+
+    public Instruction(String description, String command) {
+        this.description = description;
+        this.command = command;
+    }
 
 }
