@@ -219,16 +219,16 @@ def is_tool_installed(name):
 
 
 def usage():
-    print("Usage: devtcApp.py [global options] [tool_to_install]\n" +
+    print("Usage: devtc_app.py [global options] [tool_to_install]\n" +
           "\n" +
           "The available commands are listed below.\n" +
-          "Before installing any tool, you have to install devtcApp first.\n" +
+          "Before installing any tool, you have to install devtc first.\n" +
           "\n" +
           "Examples:\n" +
-          "devtcApp.py install              Installs devtcApp\n" +
-          "devtcApp.py remove               Removes devtcApp with all installed tools\n" +
-          "devtcApp.py install terraform    Installs terraform tool\n" +
-          "devtcApp.py remove terraform     Removes terraform tool\n" +
+          "devtc_app.py install              Installs devtc\n" +
+          "devtc_app.py remove               Removes devtc with all installed tools\n" +
+          "devtc_app.py install terraform    Installs terraform tool\n" +
+          "devtc_app.py remove terraform     Removes terraform tool\n" +
           "\n" +
           "Main commands:\n" +
           "install     Prepare your working directory for other commands\n" +
