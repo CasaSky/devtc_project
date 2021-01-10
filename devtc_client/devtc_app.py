@@ -4,13 +4,22 @@ import stat
 import sys
 import tarfile
 import zipfile
+from enum import Enum
 
+import requests
 import urllib3
+
+import managed_tool
 
 HOME_PATH = os.environ.get("HOME")
 DEVTC_HOME_PATH = "{}/.devtc".format(HOME_PATH)
 DEVTC_BIN_PATH = "{}/bin".format(DEVTC_HOME_PATH)
 DEVTC_ENV_VARIABLE = "DEVTC_HOME"
+
+
+class Process(Enum):
+    INSTALL = 'install'
+    REMOVE = 'remove'
 
 
 def modify_env_variables(install=True):
@@ -80,12 +89,11 @@ def is_devtc_installed():
 
 
 def process_devtc(process):
-    if process is None or process not in ["install", "remove"]:
+    try:
+        install_devtc() if Process(process) == Process.INSTALL else remove_devtc()
+    except ValueError:  # in case of no valid input of process (install, remove) Enum generation will raise this exception
         print("Did you mean install?")
         usage()
-        return
-
-    install_devtc() if process == "install" else remove_devtc()
 
 
 def install_tool(name, release_version, download_url, package_extension, package_binary_path):
@@ -122,7 +130,6 @@ def install_tool(name, release_version, download_url, package_extension, package
 
 
 def remove_tool(name):
-
     if not is_tool_installed(name):
         print("{} is not installed!".format(name))
         return
@@ -139,15 +146,16 @@ def remove_tool(name):
 
 
 def process_tool(name, process):
-    if name not in ["java", "terraform", "vault"]:
-        print("Unknown tool <{}>!".format(name))
-        return
-    if process not in ["install", "remove"]:
+    mt = retrieve_managed_tool(name)
+    try:
+        if mt is None:
+            print("Unknown tool <{}>!".format(name))
+            return
+
+        install_tool(mt.name, mt.last_release_version, mt.download_url, mt.package_extension, mt.package_binary_path) if Process(process) == Process.INSTALL else remove_tool(name)
+    except ValueError:  # in case of no valid input of process (install, remove) Enum generation will raise this exception
         print("Did you mean install?")
         usage()
-        return
-
-    install_tool(name, f_release_version(name), f_download_url(name), f_package_extension(name), f_package_binary_path(name)) if process == "install" else remove_tool(name)
 
 
 def download(url, last_version_path, package_extension):
@@ -156,20 +164,29 @@ def download(url, last_version_path, package_extension):
     package_path = get_package_path(last_version_path, package_extension)
 
     http = urllib3.PoolManager()
-    r = http.request('GET', url, preload_content=False)
+    response = http.request('GET', url, preload_content=False)
     try:
         with open(package_path, 'wb') as out:
             while True:
-                data = r.read(65536)
+                data = response.read(65536)
                 if not data:
                     break
                 out.write(data)
-        r.release_conn()
+        response.release_conn()
 
         extract_binaries(last_version_path, package_extension)
         os.remove(package_path)
     except RuntimeError as e:
         print("Could not download and extract binaries successfully - ", e)
+
+
+def retrieve_managed_tool(name):
+    url = "http://localhost:9090/management"
+
+    for mt in managed_tool.mapper(requests.get(url).json()):
+        if mt.__contains__(name):
+            return mt
+    return None
 
 
 def get_package_path(last_version_path, package_extension):
@@ -217,42 +234,6 @@ def usage():
           "install     Prepare your working directory for other commands\n" +
           "remove      Check whether the configuration is valid"
           )
-
-
-def f_release_version(name):
-    if name == "java":
-        return "15"
-    elif name == "terraform":
-        return "0.14.3"
-    else:
-        return "1.6.1"
-
-
-def f_download_url(name):
-    if name == "java":
-        return "https://corretto.aws/downloads/latest/amazon-corretto-15-x64-linux-jdk.tar.gz"
-    elif name == "terraform":
-        return "https://releases.hashicorp.com/terraform/0.14.3/terraform_0.14.3_linux_amd64.zip"
-    else:
-        return "https://releases.hashicorp.com/vault/1.6.1/vault_1.6.1_linux_amd64.zip"
-
-
-def f_package_extension(name):
-    if name == "java":
-        return "tar.gz"
-    elif name == "terraform":
-        return "zip"
-    else:
-        return "zip"
-
-
-def f_package_binary_path(name):
-    if name == "java":
-        return "amazon-corretto-15.0.1.9.1-linux-x64/bin/java"
-    elif name == "terraform":
-        return "terraform"
-    else:
-        return "vault"
 
 
 commands = sys.argv
