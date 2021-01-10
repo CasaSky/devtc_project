@@ -3,7 +3,7 @@
 block_cipher = None
 
 
-a = Analysis(['devtcApp.py'],
+a = Analysis(['devtc_app.py'],
              pathex=['/home/talal/repositories/devtc_project/devtc_client'],
              binaries=[],
              datas=[],
@@ -21,7 +21,7 @@ exe = EXE(pyz,
           a.scripts,
           [],
           exclude_binaries=True,
-          name='devtcApp',
+          name='devtc_app',
           debug=False,
           bootloader_ignore_signals=False,
           strip=False,
@@ -34,4 +34,4 @@ coll = COLLECT(exe,
                strip=False,
                upx=True,
                upx_exclude=[],
-               name='devtcApp')
+               name='devtc_app')

@@ -1,1 +1,1 @@
-pyinstaller devtcApp.py
+pyinstaller devtc_app.py
