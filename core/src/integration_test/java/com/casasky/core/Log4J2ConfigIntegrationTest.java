@@ -7,7 +7,7 @@ import org.apache.logging.log4j.LogManager;
 import org.junit.jupiter.api.Test;
 
 
-class Log4J2ConfigTest {
+class Log4J2ConfigIntegrationTest {
 
     @Test
     void testAndCheckLogger() {

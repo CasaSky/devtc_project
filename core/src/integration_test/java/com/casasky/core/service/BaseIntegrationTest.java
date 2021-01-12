@@ -29,6 +29,7 @@ public class BaseIntegrationTest {
         em.getTransaction().begin();
         // todo way to scan all tables
         em.createNativeQuery("truncate table tool_schema.tool").executeUpdate();
+        em.createNativeQuery("truncate table test_dummy").executeUpdate();
         em.getTransaction().commit();
 
     }

@@ -8,7 +8,7 @@ import java.time.temporal.ChronoUnit;
 
 public class TimeUtil {
 
-    private static final ZoneId DEFAULT_ZONE = ZoneId.of("Europe/Berlin");
+    public static final ZoneId DEFAULT_ZONE = ZoneId.of("Europe/Berlin");
 
     public static ZonedDateTime now() {
 
