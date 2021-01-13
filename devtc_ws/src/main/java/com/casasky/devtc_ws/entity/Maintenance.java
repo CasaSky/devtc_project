@@ -16,7 +16,7 @@ import org.hibernate.annotations.Type;
 
 
 @Entity
-@Table(schema = "tool_schema")
+@Table(schema = "tools_schema")
 @Getter
 @SuperBuilder(toBuilder = true)
 public class Maintenance extends TemplateBaseEntity {
@@ -25,8 +25,8 @@ public class Maintenance extends TemplateBaseEntity {
     private Long toolId;
     private String maintainerName;
     private String docsUrl;
-    private String downloadUrlTemplate;     // https://corretto.aws/downloads/latest/amazon-corretto-{last-release-version}-{platform-code}-jdk.tar.gz
-    private String packageBinaryPath;
+    private String downloadUrlTemplate;
+    private String packageBinaryPathTemplate;
     private String packageExtension;
     private String releaseVersion;
     private String releaseVersionFormat;

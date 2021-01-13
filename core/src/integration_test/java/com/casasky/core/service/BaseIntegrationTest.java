@@ -1,13 +1,16 @@
 package com.casasky.core.service;
 
 
-import javax.persistence.EntityManager;
+import static java.lang.String.format;
+
+import java.util.List;
+
 import javax.persistence.EntityManagerFactory;
-import javax.persistence.PersistenceContext;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.ActiveProfiles;
 
 
@@ -18,25 +21,26 @@ public class BaseIntegrationTest {
     @Autowired
     private EntityManagerFactory emf;
 
-    @PersistenceContext
-    private EntityManager em;
+    @Autowired
+    protected JdbcTemplate jdbcTemplate;
 
 
     @BeforeEach
     public void truncate() {
-
-        var em = emf.createEntityManager();
-        em.getTransaction().begin();
-        // todo way to scan all tables
-        em.createNativeQuery("truncate table tool_schema.tool").executeUpdate();
-        em.createNativeQuery("truncate table test_dummy").executeUpdate();
-        em.getTransaction().commit();
-
+        jdbcTemplate.execute(format("truncate %s", String.join(",", allTables())));
     }
 
 
-    public <T> void persist(T entity) {
+    protected <T> void persist(T entity) {
+        var em = emf.createEntityManager();
+        em.getTransaction().begin();
         em.persist(entity);
+        em.getTransaction().commit();
+    }
+
+
+    private List<String> allTables() {
+        return jdbcTemplate.queryForList("select format('%s.%s', schemaname, relname) from pg_stat_user_tables where schemaname = ?", String.class, "tools_schema");
     }
 
 }

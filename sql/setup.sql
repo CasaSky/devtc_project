@@ -18,20 +18,20 @@ create table tools_schema.tool
 
 create table tools_schema.maintenance
 (
-    id                     bigserial,
-    origin_id              bigint references tools_schema.maintenance (id),
-    tool_id                bigint not null references tools_schema.tool (id),
-    maintainer_name        text collate "C" not null,
-    docs_url               text collate "C" not null,
-    download_url_template  text collate "C" not null,
-    package_binary_path    text collate "C" not null,
-    package_extension      text collate "C" not null,
-    release_version        text collate "C" not null,
-    release_version_format text collate "C",
-    sportedPlatformCodes   jsonb not null,
-    instructions           jsonb not null, -- description, command
-    open_time              timestamptz not null,
-    close_time             timestamptz,
+    id                           bigserial,
+    origin_id                    bigint references tools_schema.maintenance (id),
+    tool_id                      bigint not null references tools_schema.tool (id),
+    maintainer_name              text collate "C" not null,
+    release_version              text collate "C" not null,
+    release_version_format       text collate "C",
+    supported_platform_codes     jsonb not null,
+    package_binary_path_template text collate "C" not null,
+    package_extension            text collate "C" not null,
+    download_url_template        text collate "C" not null,
+    docs_url                     text collate "C" not null,
+    instructions                 jsonb,
+    open_time                    timestamptz not null,
+    close_time                   timestamptz,
     primary key (id),
     constraint constr_tool_maintainer unique (tool_id, maintainer_name, origin_id)
 );

@@ -18,29 +18,27 @@ class MaintenanceTest {
         var originId = 1L;
         var toolId = 10L;
         var maintainerName = "test";
-        var docsUrl = "https://www.terraform.io/docs/index.html";
-        // https://releases.hashicorp.com/terraform/0.14.3/terraform_0.14.3_linux_amd64.zip
-        var sourceUrlTemplate= "https://releases.hashicorp.com/terraform/{release_version}/terraform_{release_version}_{platform_code}.zip";
         var releaseVersion = "0.14.3";
         var releaseVersionFormat = "//d.//d//d.//d";
         var supportedPlatformCodes = Set.of("linux_amd64");
-        // https://corretto.aws/downloads/latest/amazon-corretto-15-x64-linux-jdk.tar.gz
-        var sourceUrlTemplate2 = "https://corretto.aws/downloads/latest/amazon-corretto-{release_version}-{platform_code}-jdk.tar.gz";
-        var releaseVersion2 = "15";
-        var releaseVersionFormat2 = "";
-        var supportedPlatformCodes2 = Set.of("x64-linux");
-        var instructions = Set.of(Instruction.builder().description("unzip file").command("unzip terraform_{release_version}_{platform_code}.zip").build());
+        var packageBinaryPathTemplate = "terraform";
+        var packageExtension = "zip";
+        var sourceUrlTemplate= "https://releases.hashicorp.com/terraform/{release-version}/terraform_{release-version}_{platform-code}.{package-extension}";
+        var docsUrl = "https://www.terraform.io/docs/index.html";
+        var instructions = Set.of(Instruction.builder().description("unzip file").command("unzip terraform_{release-version}_{platform-code}.{package-extension}").build());
         var preOpenTime = TimeUtil.now();
         var maintenance = Maintenance.builder()
                 .id(id)
                 .originId(originId)
                 .toolId(toolId)
                 .maintainerName(maintainerName)
-                .docsUrl(docsUrl)
-                .downloadUrlTemplate(sourceUrlTemplate)
                 .releaseVersion(releaseVersion)
                 .releaseVersionFormat(releaseVersionFormat)
                 .supportedPlatformCodes(supportedPlatformCodes)
+                .packageBinaryPathTemplate(packageBinaryPathTemplate)
+                .packageExtension(packageExtension)
+                .downloadUrlTemplate(sourceUrlTemplate)
+                .docsUrl(docsUrl)
                 .instructions(instructions)
                 .build();
         var postOpenTime = TimeUtil.now();
@@ -49,13 +47,15 @@ class MaintenanceTest {
         assertThat(maintenance.getOriginId()).isEqualTo(originId);
         assertThat(maintenance.getToolId()).isEqualTo(toolId);
         assertThat(maintenance.getMaintainerName()).isEqualTo(maintainerName);
-        assertThat(maintenance.getDocsUrl()).isEqualTo(docsUrl);
-        assertThat(maintenance.getOpenTime()).isBetween(preOpenTime, postOpenTime);
-        assertThat(maintenance.getCloseTime()).isNull();
-        assertThat(maintenance.getDownloadUrlTemplate()).isEqualTo(sourceUrlTemplate);
         assertThat(maintenance.getReleaseVersion()).isEqualTo(releaseVersion);
         assertThat(maintenance.getReleaseVersionFormat()).isEqualTo(releaseVersionFormat);
         assertThat(maintenance.getSupportedPlatformCodes()).isEqualTo(supportedPlatformCodes);
+        assertThat(maintenance.getPackageBinaryPathTemplate()).isEqualTo(packageBinaryPathTemplate);
+        assertThat(maintenance.getPackageExtension()).isEqualTo(packageExtension);
+        assertThat(maintenance.getDownloadUrlTemplate()).isEqualTo(sourceUrlTemplate);
+        assertThat(maintenance.getDocsUrl()).isEqualTo(docsUrl);
+        assertThat(maintenance.getOpenTime()).isBetween(preOpenTime, postOpenTime);
+        assertThat(maintenance.getCloseTime()).isNull();
         assertThat(maintenance.getInstructions()).isEqualTo(instructions);
 
         var preCloseTime = TimeUtil.now();

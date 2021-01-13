@@ -7,7 +7,7 @@ import com.casasky.core.entity.TemplateBaseEntity;
 
 
 @Entity
-@Table(schema = "tool_schema")
+@Table(schema = "tools_schema")
 public class Tool extends TemplateBaseEntity {
 
     private String name;
