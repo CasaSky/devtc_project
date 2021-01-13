@@ -1,14 +1,8 @@
 package com.casasky.core.hibernate;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
 import java.io.UncheckedIOException;
 import java.lang.reflect.Type;
-import java.util.Objects;
-import java.util.Properties;
-import java.util.TimeZone;
+import java.util.*;
 
 import com.casasky.core.util.TimeUtil;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -19,6 +13,7 @@ import com.fasterxml.jackson.databind.util.StdDateFormat;
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.fasterxml.jackson.module.paramnames.ParameterNamesModule;
+import org.apache.commons.lang3.ObjectUtils;
 import org.hibernate.annotations.common.reflection.XProperty;
 import org.hibernate.annotations.common.reflection.java.JavaXMember;
 import org.hibernate.type.descriptor.WrapperOptions;
@@ -45,7 +40,7 @@ class JsonbJavaTypeDescriptor extends AbstractTypeDescriptor<Object> implements 
     private ObjectReader propertyReader;
 
 
-    JsonbJavaTypeDescriptor() {
+    private JsonbJavaTypeDescriptor() {
         super(Object.class, JsonbMutabilityPlan.INSTANCE);
     }
 
@@ -143,11 +138,12 @@ class JsonbJavaTypeDescriptor extends AbstractTypeDescriptor<Object> implements 
         @Override
         protected Object deepCopyNotNull(Object value) {
 
-            try (var bos = new ByteArrayOutputStream(); var ois = new ObjectInputStream(new ByteArrayInputStream(bos.toByteArray())))  {
-                return ois.readObject();
-            } catch (IOException | ClassNotFoundException e) {
-                return null;
+            // Immutable by default, no need to copy
+            if (value.getClass().getName().equals("java.util.ImmutableCollections$AbstractImmutableCollection")) {
+                return value;
             }
+
+            return ObjectUtils.clone(value);
 
         }
 
