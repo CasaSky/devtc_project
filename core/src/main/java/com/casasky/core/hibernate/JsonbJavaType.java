@@ -13,7 +13,7 @@ public class JsonbJavaType extends AbstractSingleColumnStandardBasicType<Object>
 
 
     public JsonbJavaType() {
-        super(JsonbSqlTypeDescriptor.INSTANCE, JsonbJavaTypeDescriptor.INSTANCE);
+        super(JsonbSqlTypeDescriptor.INSTANCE, new JsonbJavaTypeDescriptor());
     }
 
 

@@ -6,5 +6,6 @@ create database devtc_db_it owner tech_user;
 create table test_dummy(
     id bigserial,
     jsonb_attribute jsonb,
+    jsonb_attributes jsonb,
     primary key (id)
 );

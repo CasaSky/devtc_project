@@ -1,9 +1,7 @@
 package com.casasky.core.entity;
 
 
-
-import java.io.Serializable;
-
+import com.casasky.core.hibernate.JsonbCloneable;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -12,10 +10,20 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
-public class JsonbDummy implements Serializable {
-
-    private static final long serialVersionUID = -410996066142922232L;
+public class JsonbDummy implements JsonbCloneable {
 
     private String x;
+
+
+    @Override
+    public Object clone() {
+
+        try {
+            return super.clone();
+        } catch (CloneNotSupportedException e) {
+            return new JsonbDummy(this.x);
+        }
+
+    }
 
 }
