@@ -16,14 +16,12 @@ class ToolServiceIntegrationTest extends BaseIntegrationTest {
 
 
     @Test
-    void testPersist() {
+    void persistence() {
 
         var tool = new Tool("test");
         toolService.persist(tool);
-
         var tools = toolService.findAll(Tool.class);
-        assertThat(tools).isNotEmpty();
-        assertThat(tools.get(0)).usingRecursiveComparison().isEqualTo(tool);
+        assertThat(tools).usingRecursiveFieldByFieldElementComparator().containsExactly(tool);
 
     }
 

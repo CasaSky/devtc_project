@@ -8,8 +8,6 @@ import javax.persistence.Table;
 
 import com.casasky.core.entity.TemplateBaseEntity;
 import com.casasky.core.util.TimeUtil;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.Type;
