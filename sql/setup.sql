@@ -6,6 +6,8 @@ create database devtc_db owner tech_user;
 
 set role tech_user;
 
+create schema core;
+
 create schema tools_schema;
 
 create table tools_schema.tool

@@ -7,6 +7,7 @@ import java.util.List;
 
 import javax.persistence.EntityManagerFactory;
 
+import com.casasky.core.entity.Schema;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -27,7 +28,7 @@ public class BaseIntegrationTest {
 
     @BeforeEach
     public void truncate() {
-        jdbcTemplate.execute(format("truncate %s", String.join(",", allTables())));
+        Schema.ALL_SCHEMA.forEach(schema -> jdbcTemplate.execute(format("truncate %s", String.join(",", allTables(schema)))));
     }
 
 
@@ -39,8 +40,8 @@ public class BaseIntegrationTest {
     }
 
 
-    private List<String> allTables() {
-        return jdbcTemplate.queryForList("select format('%s.%s', schemaname, relname) from pg_stat_user_tables where schemaname = ?", String.class, "tools_schema");
+    private List<String> allTables(String schema) {
+        return jdbcTemplate.queryForList("select format('%s.%s', schemaname, relname) from pg_stat_user_tables where schemaname = ?", String.class, schema);
     }
 
 }
