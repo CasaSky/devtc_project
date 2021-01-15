@@ -1,8 +1,9 @@
-package com.casasky.core.hibernate;
+package com.casasky.core.hibernate.jsonb;
 
 
 import java.util.Properties;
 
+import com.casasky.core.hibernate.CustomSqlTypeDescriptor;
 import org.hibernate.type.AbstractSingleColumnStandardBasicType;
 import org.hibernate.usertype.DynamicParameterizedType;
 
@@ -13,7 +14,7 @@ public class JsonbJavaType extends AbstractSingleColumnStandardBasicType<Object>
 
 
     public JsonbJavaType() {
-        super(JsonbSqlTypeDescriptor.INSTANCE, new JsonbJavaTypeDescriptor());
+        super(CustomSqlTypeDescriptor.INSTANCE, new JsonbJavaTypeDescriptor());
     }
 
 

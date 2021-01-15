@@ -1,7 +1,7 @@
 package com.casasky.core.entity;
 
 
-import com.casasky.core.hibernate.JsonbCloneable;
+import com.casasky.core.hibernate.jsonb.JsonbCloneable;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

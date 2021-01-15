@@ -25,7 +25,8 @@ public class Maintenance extends TemplateBaseEntity {
     private String docsUrl;
     private String downloadUrlTemplate;
     private String packageBinaryPathTemplate;
-    private String packageExtension;
+    @Type(type = "enum")
+    private PackageExtension packageExtension;
     private String releaseVersion;
     private String releaseVersionFormat;
     @Type(type = "jsonb")

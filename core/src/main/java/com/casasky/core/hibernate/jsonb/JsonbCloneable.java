@@ -1,4 +1,4 @@
-package com.casasky.core.hibernate;
+package com.casasky.core.hibernate.jsonb;
 
 
 /**

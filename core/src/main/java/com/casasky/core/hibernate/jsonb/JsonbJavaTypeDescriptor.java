@@ -1,4 +1,4 @@
-package com.casasky.core.hibernate;
+package com.casasky.core.hibernate.jsonb;
 
 import static java.lang.String.format;
 
@@ -113,7 +113,7 @@ class JsonbJavaTypeDescriptor extends AbstractTypeDescriptor<Object> implements 
             }
         }
 
-        throw unknownUnwrap(value.getClass());
+        throw unknownWrap(value.getClass());
 
     }
 

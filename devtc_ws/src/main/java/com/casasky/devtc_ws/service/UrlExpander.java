@@ -25,7 +25,7 @@ class UrlExpander {
     static class DownloadUrlInput {
         private final String releaseVersion;
         private final String selectPlatformCode;
-        private final String packageExtension;
+        private final PackageExtension packageExtension;
         private final String downloadUrlTemplate;
     }
 

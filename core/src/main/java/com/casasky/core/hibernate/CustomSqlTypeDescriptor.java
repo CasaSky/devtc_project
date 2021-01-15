@@ -16,11 +16,11 @@ import org.hibernate.type.descriptor.sql.BasicExtractor;
 import org.hibernate.type.descriptor.sql.SqlTypeDescriptor;
 
 
-class JsonbSqlTypeDescriptor implements SqlTypeDescriptor {
+public class CustomSqlTypeDescriptor implements SqlTypeDescriptor {
 
     private static final long serialVersionUID = 2396076028084659033L;
 
-    static final JsonbSqlTypeDescriptor INSTANCE = new JsonbSqlTypeDescriptor();
+    public static final CustomSqlTypeDescriptor INSTANCE = new CustomSqlTypeDescriptor();
 
     @Override
     public int getSqlType() {

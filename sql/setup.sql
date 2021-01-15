@@ -16,6 +16,9 @@ create table tools_schema.tool
     constraint const_tool_name unique (name)
 );
 
+create type tools_schema.package_extension as enum ('TAR_GZ', 'ZIP');
+
+-- tools_schema.package_extension not null,
 create table tools_schema.maintenance
 (
     id                           bigserial,
@@ -26,7 +29,7 @@ create table tools_schema.maintenance
     release_version_format       text collate "C",
     supported_platform_codes     jsonb not null,
     package_binary_path_template text collate "C" not null,
-    package_extension            text collate "C" not null,
+    package_extension            tools_schema.package_extension not null,
     download_url_template        text collate "C" not null,
     docs_url                     text collate "C" not null,
     instructions                 jsonb,

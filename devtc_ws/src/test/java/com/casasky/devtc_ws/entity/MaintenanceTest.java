@@ -22,7 +22,7 @@ class MaintenanceTest {
         var releaseVersionFormat = "//d.//d//d.//d";
         var supportedPlatformCodes = Set.of("linux_amd64");
         var packageBinaryPathTemplate = "terraform";
-        var packageExtension = "zip";
+        var packageExtension = PackageExtension.ZIP;
         var sourceUrlTemplate= "https://releases.hashicorp.com/terraform/{release-version}/terraform_{release-version}_{platform-code}.{package-extension}";
         var docsUrl = "https://www.terraform.io/docs/index.html";
         var instructions = Set.of(Instruction.builder().description("unzip file").command("unzip terraform_{release-version}_{platform-code}.{package-extension}").build());
