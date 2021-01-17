@@ -27,8 +27,56 @@ class MaintenanceServiceIntegrationTest extends BaseIntegrationTest {
         var maintenance = MaintenanceDemo.get(tool.getId());
         maintenanceService.persist(maintenance);
 
-        List<Maintenance> all = maintenanceService.findAll(Maintenance.class);
-        assertThat(all).usingRecursiveFieldByFieldElementComparator().containsExactly(maintenance);
+        Maintenance maintenanceFromDB = maintenanceService.find(maintenance.getId());
+        assertThat(maintenanceFromDB).usingRecursiveComparison().isEqualTo(maintenance);
+
+    }
+
+
+    @Test
+    void findAll() {
+
+        var tool = new Tool("java");
+        persist(tool);
+
+        var maintenance = MaintenanceDemo.get(tool.getId());
+        maintenanceService.persist(maintenance);
+
+        List<Maintenance> maintenanceFromDB = maintenanceService.findAll();
+        assertThat(maintenanceFromDB).usingRecursiveFieldByFieldElementComparator().containsExactly(maintenance);
+
+    }
+
+
+    @Test
+    void isDuplicate() {
+
+        var tool = new Tool("java");
+        persist(tool);
+
+        var maintenance = MaintenanceDemo.get(tool.getId());
+
+        assertThat(maintenanceService.isDuplicate(tool.getId(), maintenance.getMaintainerName())).isFalse();
+
+        maintenanceService.persist(maintenance);
+
+        assertThat(maintenanceService.isDuplicate(tool.getId(), maintenance.getMaintainerName())).isTrue();
+
+    }
+
+    @Test
+    void doesExist() {
+
+        assertThat(maintenanceService.doesExist(1L)).isFalse();
+
+        var tool = new Tool("java");
+        persist(tool);
+
+        var maintenance = MaintenanceDemo.get(tool.getId());
+
+        maintenanceService.persist(maintenance);
+
+        assertThat(maintenanceService.doesExist(maintenance.getId())).isTrue();
 
     }
 

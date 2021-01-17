@@ -8,7 +8,7 @@ import lombok.Getter;
 
 @Getter
 @Builder
-class Instruction implements JsonbCloneable {
+public class Instruction implements JsonbCloneable {
 
     private String description;
     private String command;

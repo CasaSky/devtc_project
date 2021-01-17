@@ -24,7 +24,7 @@ create type tools_schema.package_extension as enum ('TAR_GZ', 'ZIP');
 create table tools_schema.maintenance
 (
     id                           bigserial,
-    origin_id                    bigint references tools_schema.maintenance (id),
+    origin_id                    bigint, --references tools_schema.maintenance (id),
     tool_id                      bigint not null references tools_schema.tool (id),
     maintainer_name              text collate "C" not null,
     release_version              text collate "C" not null,
@@ -40,6 +40,7 @@ create table tools_schema.maintenance
     primary key (id),
     constraint constr_tool_maintainer unique (tool_id, maintainer_name, origin_id)
 );
+
 
 create table tools_schema.release
 (

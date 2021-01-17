@@ -1,4 +1,4 @@
-package com.casasky.devtc_ws.controller;
+package com.casasky.devtc_ws.service;
 
 import com.casasky.devtc_ws.entity.Tool;
 
@@ -21,7 +21,7 @@ public class ToolDto {
     }
 
 
-    Tool entity() {
+    public Tool entity() {
         return new Tool(name);
     }
 

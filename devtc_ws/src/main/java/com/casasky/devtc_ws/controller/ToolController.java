@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import com.casasky.devtc_ws.entity.Tool;
+import com.casasky.devtc_ws.service.ToolDto;
 import com.casasky.devtc_ws.service.ToolService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

@@ -28,7 +28,7 @@ public class BaseIntegrationTest {
 
     @BeforeEach
     public void truncate() {
-        Schema.ALL_SCHEMA.forEach(schema -> jdbcTemplate.execute(format("truncate %s", String.join(",", allTables(schema)))));
+        Schema.ALL_SCHEMA.forEach(schema -> jdbcTemplate.execute(format("truncate %s restart identity", String.join(",", allTables(schema)))));
     }
 
 

@@ -3,6 +3,8 @@ package com.casasky.devtc_ws.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.util.List;
+
 import com.casasky.core.service.BaseIntegrationTest;
 import com.casasky.devtc_ws.entity.Tool;
 import org.junit.jupiter.api.Test;
@@ -20,8 +22,34 @@ class ToolServiceIntegrationTest extends BaseIntegrationTest {
 
         var tool = new Tool("test");
         toolService.persist(tool);
-        var tools = toolService.findAll(Tool.class);
+
+        Tool toolFromDB = toolService.find(tool.getId());
+        assertThat(toolFromDB).usingRecursiveComparison().isEqualTo(tool);
+
+    }
+
+
+    @Test
+    void findAll() {
+
+        var tool = new Tool("java");
+        toolService.persist(tool);
+
+        List<Tool> tools = toolService.findAll();
         assertThat(tools).usingRecursiveFieldByFieldElementComparator().containsExactly(tool);
+
+    }
+
+
+    @Test
+    void doesExist() {
+
+        assertThat(toolService.doesExist(1L)).isFalse();
+
+        var tool = new Tool("test");
+        toolService.persist(tool);
+
+        assertThat(toolService.doesExist(tool.getId())).isTrue();
 
     }
 

@@ -12,10 +12,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 
 @Transactional
-public class TemplateBaseService {
+public class TemplateBaseService<T> {
 
     @PersistenceContext
-    private final EntityManager em;
+    protected final EntityManager em;
 
 
     public TemplateBaseService(EntityManager em) {
@@ -23,15 +23,23 @@ public class TemplateBaseService {
     }
 
 
-    public <T> void persist(T entity) {
+    public void persist(T entity) {
         em.persist(entity);
     }
 
 
-    public <T> List<T> findAll(Class<T> clazz) {
-
+    public List<T> findAll(Class<T> clazz) {
         return em.createQuery(format("select e from %s e", clazz.getSimpleName()), clazz).getResultList();
+    }
 
+
+    protected T find(Class<T> clazz, Long id) {
+        return em.find(clazz, id);
+    }
+
+
+    protected boolean doesExist(Class<T> clazz, Long id) {
+        return find(clazz, id) != null;
     }
 
 }

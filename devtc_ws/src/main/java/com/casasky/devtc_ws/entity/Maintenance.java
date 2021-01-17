@@ -20,7 +20,9 @@ import org.hibernate.annotations.Type;
 public class Maintenance extends TemplateBaseEntity {
 
     private Long originId;
+
     private Long toolId;
+
     private String maintainerName;
     private String docsUrl;
     private String downloadUrlTemplate;
@@ -33,10 +35,12 @@ public class Maintenance extends TemplateBaseEntity {
     private Set<String> supportedPlatformCodes;
     @Type(type = "jsonb")
     private Set<Instruction> instructions;
+
     private final ZonedDateTime openTime = TimeUtil.now();
     private ZonedDateTime closeTime;
 
     protected Maintenance() {
+        this.originId = 0L;
     }
 
     public void close() {
