@@ -1,44 +1,103 @@
 package com.casasky.devtc_ws.service;
 
 
-import static java.lang.String.format;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 import com.casasky.core.service.BaseIntegrationTest;
 import com.casasky.devtc_ws.entity.Maintenance;
-import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.mock.mockito.MockBean;
 
+import com.casasky.devtc_ws.entity.Tool;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.reactive.function.client.ClientRequest;
+import org.springframework.web.reactive.function.client.ClientResponse;
+import org.springframework.web.reactive.function.client.ExchangeFunction;
+import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Mono;
 
 class ToolUpdaterIntegrationTest extends BaseIntegrationTest {
 
-    @MockBean
     private ToolUpdater toolUpdater;
+
+    @Autowired
+    private MaintenanceService maintenanceService;
+
+    @Autowired
+    private UrlExpander urlExpander;
+
+    @MockBean
+    private ExchangeFunction exchangeFunction;
+
+
+    @BeforeEach
+    void setUp() {
+        when(exchangeFunction.exchange(any(ClientRequest.class))).thenReturn(Mono.just(ClientResponse.create(HttpStatus.OK).build()));
+
+        var mockedWebClient = WebClient.builder().exchangeFunction(exchangeFunction).build();
+        toolUpdater = new ToolUpdater(mockedWebClient, maintenanceService, urlExpander);
+    }
 
 
     @Test
-    void findNextReleaseVersion() {
+    void getNextReleaseVersions() {
+
+        assertThat(toolUpdater.computeNewReleaseVersions("15")).containsExactly("16");
+        assertThat(toolUpdater.computeNewReleaseVersions("0.14.4")).containsExactlyInAnyOrder("0.14.5", "0.15.4", "1.14.4");
+
+    }
+
+
+
+    @Test
+    void findHighestNextReleaseVersion() {
 
         // source
-        Maintenance maintenance = MaintenanceDemo.get();
+        Maintenance maintenance = MaintenanceDemo.java(1L);
 
         // input
-        // this part will be generated from the urlExpander via the maintenanceService
-        var formattedDownloadUrl = "https://corretto.aws/downloads/latest/amazon-corretto-%s-%s-jdk.%s";
-        var expectedExpandedDownloadUrl = format(formattedDownloadUrl, maintenance.getReleaseVersion(), maintenance.getSupportedPlatformCodes(), maintenance.getPackageExtension());
-        // internal part
+        String linux = maintenance.getSupportedPlatformCodes().iterator().next();
         var updateInput = ToolUpdater.UpdateInput.builder()
                 .lastReleaseVersion(maintenance.getReleaseVersion())
-                .releaseVersionFormat(maintenance.getReleaseVersionFormat())
-                .downloadUrl(expectedExpandedDownloadUrl)
+                .selectPlatformCode(linux)
+                .packageExtension(maintenance.getPackageExtension().getValue())
+                .downloadUrlTemplate(maintenance.getDownloadUrlTemplate())
                 .build();
 
         // expected output
         var expectedNextReleaseVersion = "16";
-        when(toolUpdater.findNextReleaseVersion(updateInput)).thenReturn(expectedNextReleaseVersion);
 
-        assertThat(toolUpdater.findNextReleaseVersion(updateInput)).isEqualTo(expectedNextReleaseVersion);
+        assertThat(toolUpdater.findHighestNewReleaseVersion(updateInput)).isEqualTo(expectedNextReleaseVersion);
+
+    }
+
+
+    @Test
+    void updateReleaseVersion() {
+
+        // source
+        var tool = new Tool("java");
+        persist(tool);
+        Maintenance maintenance = MaintenanceDemo.java(tool.getId());
+        persist(maintenance);
+
+        // input
+        String linux = maintenance.getSupportedPlatformCodes().iterator().next();
+        var updateInput = ToolUpdater.UpdateInput.builder()
+                .lastReleaseVersion(maintenance.getReleaseVersion())
+                .selectPlatformCode(linux)
+                .packageExtension(maintenance.getPackageExtension().getValue())
+                .downloadUrlTemplate(maintenance.getDownloadUrlTemplate())
+                .build();
+
+        toolUpdater.updateReleaseVersion(maintenance.getId(), updateInput);
+
+        var maintenanceFromDB = find(Maintenance.class, maintenance.getId());
+        assertThat(maintenanceFromDB.getReleaseVersion()).isGreaterThan(maintenance.getReleaseVersion());
 
     }
 

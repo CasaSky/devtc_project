@@ -1,14 +1,18 @@
 package com.casasky.devtc_ws.entity;
 
 
+import lombok.Getter;
+
+
+@Getter
 public enum PackageExtension {
     TAR_GZ("tar.gz"),
     ZIP("zip");
 
-    private final String name;
+    private final String value;
 
-    PackageExtension(String name) {
-        this.name = name;
+    PackageExtension(String value) {
+        this.value = value;
     }
 
 }

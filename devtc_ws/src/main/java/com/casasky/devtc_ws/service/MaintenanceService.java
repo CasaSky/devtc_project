@@ -2,6 +2,7 @@ package com.casasky.devtc_ws.service;
 
 
 import java.util.List;
+import java.util.Set;
 
 import javax.persistence.EntityManager;
 
@@ -47,7 +48,17 @@ public class MaintenanceService extends TemplateBaseService<Maintenance> {
 
 
     Maintenance find(Long id) {
-        return find(Maintenance.class, id);
+        Maintenance maintenance = find(Maintenance.class, id);
+        if (maintenance == null) {
+            throw new MaintenanceNotFoundException(id);
+        }
+        return maintenance;
+    }
+
+
+    public void updateReleaseVersion(Long id, String newReleaseVersion) {
+        Maintenance maintenance = find(id);
+        maintenance.updateReleaseVersion(newReleaseVersion);
     }
 
 
@@ -60,6 +71,11 @@ public class MaintenanceService extends TemplateBaseService<Maintenance> {
         return em.createQuery("select m from Maintenance m where m.toolId = :toolId and m.maintainerName = :maintainerName")
                 .setParameter("toolId", toolId)
                 .setParameter("maintainerName", maintainerName).getResultList().size() > 0;
+    }
+
+
+    public Set<ManagedToolDto> deliverToolchain() {
+        return ManagedToolDto.demo(); //TODO implement
     }
 
 }

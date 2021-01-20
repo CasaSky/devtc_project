@@ -49,4 +49,8 @@ public class Maintenance extends TemplateBaseEntity {
 
     }
 
+    public void updateReleaseVersion(String newReleaseVersion) {
+        releaseVersion = newReleaseVersion;
+    }
+
 }

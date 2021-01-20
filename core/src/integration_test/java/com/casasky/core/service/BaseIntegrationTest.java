@@ -40,6 +40,12 @@ public class BaseIntegrationTest {
     }
 
 
+    protected <T> T find(Class<T> clazz, Long id) {
+        var em = emf.createEntityManager();
+        return em.find(clazz, id);
+    }
+
+
     private List<String> allTables(String schema) {
         return jdbcTemplate.queryForList("select format('%s.%s', schemaname, relname) from pg_stat_user_tables where schemaname = ?", String.class, schema);
     }

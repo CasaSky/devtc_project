@@ -1,23 +1,31 @@
 package com.casasky.devtc_ws.service;
 
 
-import com.casasky.devtc_ws.entity.PackageExtension;
+import java.util.Map;
+
 import lombok.Builder;
+
 import org.springframework.stereotype.Component;
+import org.springframework.web.util.UriTemplate;
 
 
 @Component
 class UrlExpander {
 
-    // Todo implement me
     String expandDownloadUrl(DownloadUrlInput downloadUrlInput) {
-        return null;
+        return new UriTemplate(downloadUrlInput.downloadUrlTemplate)
+                .expand(Map.of(
+                "release-version", downloadUrlInput.releaseVersion,
+                "platform-code", downloadUrlInput.selectPlatformCode,
+                "package-extension", downloadUrlInput.packageExtension))
+                .toString();
     }
 
 
-    // Todo implement me
     String expandBinaryPath(BinaryPathInput binaryPathInput) {
-        return null;
+        return new UriTemplate(binaryPathInput.binaryPathTemplate)
+                .expand(Map.of("release-version", binaryPathInput.releaseVersion))
+                .toString();
     }
 
 
@@ -25,7 +33,7 @@ class UrlExpander {
     static class DownloadUrlInput {
         private final String releaseVersion;
         private final String selectPlatformCode;
-        private final PackageExtension packageExtension;
+        private final String packageExtension;
         private final String downloadUrlTemplate;
     }
 
