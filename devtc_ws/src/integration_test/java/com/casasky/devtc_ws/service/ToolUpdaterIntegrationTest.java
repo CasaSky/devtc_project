@@ -63,7 +63,7 @@ class ToolUpdaterIntegrationTest extends BaseIntegrationTest {
         String linux = maintenance.getSupportedPlatformCodes().iterator().next();
         var updateInput = ToolUpdater.UpdateInput.builder()
                 .lastReleaseVersion(maintenance.getReleaseVersion())
-                .selectPlatformCode(linux)
+                .selectedPlatformCode(linux)
                 .packageExtension(maintenance.getPackageExtension().getValue())
                 .downloadUrlTemplate(maintenance.getDownloadUrlTemplate())
                 .build();
@@ -89,7 +89,7 @@ class ToolUpdaterIntegrationTest extends BaseIntegrationTest {
         String linux = maintenance.getSupportedPlatformCodes().iterator().next();
         var updateInput = ToolUpdater.UpdateInput.builder()
                 .lastReleaseVersion(maintenance.getReleaseVersion())
-                .selectPlatformCode(linux)
+                .selectedPlatformCode(linux)
                 .packageExtension(maintenance.getPackageExtension().getValue())
                 .downloadUrlTemplate(maintenance.getDownloadUrlTemplate())
                 .build();

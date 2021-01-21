@@ -30,7 +30,6 @@ public class Maintenance extends TemplateBaseEntity {
     @Type(type = "enum")
     private PackageExtension packageExtension;
     private String releaseVersion;
-    private String releaseVersionFormat;
     @Type(type = "jsonb")
     private Set<String> supportedPlatformCodes;
     @Type(type = "jsonb")

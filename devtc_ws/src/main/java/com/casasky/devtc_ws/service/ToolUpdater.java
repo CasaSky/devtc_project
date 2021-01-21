@@ -74,7 +74,7 @@ class ToolUpdater {
     private String expandDownloadUrl(String version, UpdateInput updateInput) {
         UrlExpander.DownloadUrlInput downloadUrlInput = UrlExpander.DownloadUrlInput.builder()
                 .releaseVersion(version)
-                .selectPlatformCode(updateInput.selectPlatformCode)
+                .selectedPlatformCode(updateInput.selectedPlatformCode)
                 .packageExtension(updateInput.packageExtension)
                 .downloadUrlTemplate(updateInput.downloadUrlTemplate)
                 .build();
@@ -91,7 +91,7 @@ class ToolUpdater {
     @Builder
     static class UpdateInput {
         private final String lastReleaseVersion;
-        private final String selectPlatformCode;
+        private final String selectedPlatformCode;
         private final String packageExtension;
         private final String downloadUrlTemplate;
     }

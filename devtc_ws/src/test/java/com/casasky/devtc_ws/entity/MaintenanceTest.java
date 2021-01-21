@@ -33,7 +33,6 @@ class MaintenanceTest {
                 .toolId(toolId)
                 .maintainerName(maintainerName)
                 .releaseVersion(releaseVersion)
-                .releaseVersionFormat(releaseVersionFormat)
                 .supportedPlatformCodes(supportedPlatformCodes)
                 .packageBinaryPathTemplate(packageBinaryPathTemplate)
                 .packageExtension(packageExtension)
@@ -48,7 +47,6 @@ class MaintenanceTest {
         assertThat(maintenance.getToolId()).isEqualTo(toolId);
         assertThat(maintenance.getMaintainerName()).isEqualTo(maintainerName);
         assertThat(maintenance.getReleaseVersion()).isEqualTo(releaseVersion);
-        assertThat(maintenance.getReleaseVersionFormat()).isEqualTo(releaseVersionFormat);
         assertThat(maintenance.getSupportedPlatformCodes()).isEqualTo(supportedPlatformCodes);
         assertThat(maintenance.getPackageBinaryPathTemplate()).isEqualTo(packageBinaryPathTemplate);
         assertThat(maintenance.getPackageExtension()).isEqualTo(packageExtension);

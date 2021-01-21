@@ -16,7 +16,7 @@ class UrlExpander {
         return new UriTemplate(downloadUrlInput.downloadUrlTemplate)
                 .expand(Map.of(
                 "release-version", downloadUrlInput.releaseVersion,
-                "platform-code", downloadUrlInput.selectPlatformCode,
+                "platform-code", downloadUrlInput.selectedPlatformCode,
                 "package-extension", downloadUrlInput.packageExtension))
                 .toString();
     }
@@ -32,7 +32,7 @@ class UrlExpander {
     @Builder
     static class DownloadUrlInput {
         private final String releaseVersion;
-        private final String selectPlatformCode;
+        private final String selectedPlatformCode;
         private final String packageExtension;
         private final String downloadUrlTemplate;
     }

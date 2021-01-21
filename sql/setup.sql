@@ -28,7 +28,6 @@ create table tools_schema.maintenance
     tool_id                      bigint not null references tools_schema.tool (id),
     maintainer_name              text collate "C" not null,
     release_version              text collate "C" not null,
-    release_version_format       text collate "C",
     supported_platform_codes     jsonb not null,
     package_binary_path_template text collate "C" not null,
     package_extension            tools_schema.package_extension not null,

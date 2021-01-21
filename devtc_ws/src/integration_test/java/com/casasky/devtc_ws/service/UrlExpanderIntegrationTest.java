@@ -3,7 +3,6 @@ package com.casasky.devtc_ws.service;
 
 import static java.lang.String.format;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.when;
 
 import com.casasky.core.service.BaseIntegrationTest;
 import com.casasky.devtc_ws.entity.Maintenance;
@@ -25,10 +24,13 @@ class UrlExpanderIntegrationTest extends BaseIntegrationTest {
         Maintenance maintenance = MaintenanceDemo.java(1L);
 
         // input
-        var linux = maintenance.getSupportedPlatformCodes().stream().filter(s -> s.equals("x64-linux")).findAny().orElse(null);
+        var linux = maintenance.getSupportedPlatformCodes().stream()
+                .filter(p -> p.contains("linux"))
+                .findAny()
+                .orElseThrow();
         var downloadUrlInput = UrlExpander.DownloadUrlInput.builder()
                 .releaseVersion(maintenance.getReleaseVersion())
-                .selectPlatformCode(linux)
+                .selectedPlatformCode(linux)
                 .packageExtension(maintenance.getPackageExtension().getValue())
                 .downloadUrlTemplate(maintenance.getDownloadUrlTemplate())
                 .build();
