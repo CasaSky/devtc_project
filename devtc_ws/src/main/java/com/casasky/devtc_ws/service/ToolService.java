@@ -9,6 +9,7 @@ import com.casasky.core.service.TemplateBaseService;
 import com.casasky.devtc_ws.entity.Maintenance;
 import com.casasky.devtc_ws.entity.Tool;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 
 @Service
@@ -37,5 +38,17 @@ public class ToolService extends TemplateBaseService<Tool> {
         return doesExist(Tool.class, id);
     }
 
+
+    Long findIdByName(String name) {
+        return em.createQuery("select t.id from Tool t where t.name = :name", Long.class)
+                .setParameter("name", name)
+                .getSingleResult();
+    }
+
+    String findNameById(Long id) {
+        return em.createQuery("select t.name from Tool t where t.id = :id", String.class)
+                .setParameter("id", id)
+                .getSingleResult();
+    }
 
 }

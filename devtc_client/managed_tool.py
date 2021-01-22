@@ -20,3 +20,7 @@ def mapper(response):
         managed_tools.append(ManagedTool(mt))
 
     return managed_tools
+
+
+def single_mapper(response):
+    return ManagedTool(response)

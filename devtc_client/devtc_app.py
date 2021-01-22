@@ -2,6 +2,7 @@ import os
 import shutil
 import stat
 import sys
+import platform
 import tarfile
 import zipfile
 from enum import Enum
@@ -146,8 +147,22 @@ def remove_tool(name):
 
 
 def process_tool(name, process):
-    mt = retrieve_managed_tool(name)
+    linux = "Linux"
+    windows = "Windows"
+    darwin = "Darwin"
+    platform_code = platform.system()
+    platform_param = ""
+    if platform_code == linux:
+        platform_param = linux
+    elif platform_code == windows:
+        platform_param = windows
+    elif platform_code == darwin:
+        platform_param = darwin
+    else:
+        print("Unknown platform <{}>!".format(platform_param))
+
     try:
+        mt = retrieve_managed_tool(name, platform_param)
         if mt is None:
             print("Unknown tool <{}>!".format(name))
             return
@@ -180,13 +195,18 @@ def download(url, last_version_path, package_extension):
         print("Could not download and extract binaries successfully - ", e)
 
 
-def retrieve_managed_tool(name):
-    url = "http://localhost:9090/management"
+def retrieve_managed_tool(name, platform_param):
+    params = {'platform': platform_param}
+    url = "http://localhost:9090/toolchain/{}".format(name)
 
-    for mt in managed_tool.mapper(requests.get(url).json()):
-        if mt.__contains__(name):
-            return mt
-    return None
+    return managed_tool.single_mapper(requests.get(url, params).json())
+
+
+def retrieve_all_managed_tools(platform_param):
+    params = {'platform': platform_param}
+    url = "http://localhost:9090/toolchain"
+
+    return managed_tool.mapper(requests.get(url, params).json())
 
 
 def get_package_path(last_version_path, package_extension):

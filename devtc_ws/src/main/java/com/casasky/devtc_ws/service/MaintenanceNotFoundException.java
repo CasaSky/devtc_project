@@ -14,4 +14,8 @@ class MaintenanceNotFoundException extends RuntimeException {
         super(format("Maintenance with id %s not found", id));
     }
 
+    MaintenanceNotFoundException(String toolName, String platform) {
+        super(format("Maintenance for %s in %s not found", toolName, platform));
+    }
+
 }

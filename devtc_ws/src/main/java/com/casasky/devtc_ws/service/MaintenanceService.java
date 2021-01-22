@@ -9,6 +9,7 @@ import javax.persistence.EntityManager;
 
 import com.casasky.core.service.TemplateBaseService;
 import com.casasky.devtc_ws.entity.Maintenance;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -83,7 +84,7 @@ public class MaintenanceService extends TemplateBaseService<Maintenance> {
                 .filter(m -> m.getSupportedPlatformCodes().stream()
                         .anyMatch(p -> p.contains(selectedPlatform)))
                 .map(m -> ManagedToolDto.builder()
-                        .name(toolService.find(m.getToolId()).getName())
+                        .name(toolService.findNameById(m.getToolId()))
                         .downloadUrl(urlExpander.expandDownloadUrl(UrlExpander.DownloadUrlInput.builder()
                                 .releaseVersion(m.getReleaseVersion())
                                 .selectedPlatformCode(m.getSupportedPlatformCodes().stream()
@@ -101,6 +102,42 @@ public class MaintenanceService extends TemplateBaseService<Maintenance> {
                         .packageExtension(m.getPackageExtension())
                         .build())
                 .collect(Collectors.toUnmodifiableSet());
+    }
+
+
+    public ManagedToolDto deliverTool(String name, String selectedPlatform) {
+        Long toolId = toolService.findIdByName(name);
+        Maintenance maintenance = findAllByToolId(toolId).stream()
+                .filter(m -> m.getSupportedPlatformCodes().stream()
+                        .anyMatch(p -> StringUtils.containsIgnoreCase(p, selectedPlatform)))
+                .findAny()
+                .orElseThrow(() -> new MaintenanceNotFoundException(name, selectedPlatform));
+        return ManagedToolDto.builder()
+                .name(name)
+                .downloadUrl(urlExpander.expandDownloadUrl(UrlExpander.DownloadUrlInput.builder()
+                        .releaseVersion(maintenance.getReleaseVersion())
+                        .selectedPlatformCode(maintenance.getSupportedPlatformCodes().stream()
+                                .filter(p -> StringUtils.containsIgnoreCase(p, selectedPlatform))
+                                .findAny()
+                                .orElseThrow(() -> new RuntimeException("Could not match selected platform")))
+                        .packageExtension(maintenance.getPackageExtension().getValue())
+                        .downloadUrlTemplate(maintenance.getDownloadUrlTemplate())
+                        .build()))
+                .lastReleaseVersion(maintenance.getReleaseVersion())
+                .packageBinaryPath(urlExpander.expandBinaryPath(UrlExpander.BinaryPathInput.builder()
+                        .releaseVersion(maintenance.getReleaseVersion())
+                        .binaryPathTemplate(maintenance.getPackageBinaryPathTemplate())
+                        .build()))
+                .packageExtension(maintenance.getPackageExtension())
+                .build();
+    }
+
+
+    List<Maintenance> findAllByToolId(Long toolId) {
+        return em.createQuery("select m from Maintenance m where m.toolId = :toolId", Maintenance.class)
+                .setParameter("toolId", toolId)
+                .getResultList();
+
     }
 
 }

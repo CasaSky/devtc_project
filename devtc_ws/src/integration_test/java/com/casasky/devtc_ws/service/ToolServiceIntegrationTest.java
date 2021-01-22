@@ -53,4 +53,25 @@ class ToolServiceIntegrationTest extends BaseIntegrationTest {
 
     }
 
+
+    @Test
+    void findIdByName() {
+        var java = "java";
+        var javaTool = new Tool(java);
+        toolService.persist(javaTool);
+
+        assertThat(toolService.findIdByName(java)).isEqualTo(javaTool.getId());
+    }
+
+
+    @Test
+    void findNameById() {
+        var java = "java";
+        var javaTool = new Tool(java);
+        toolService.persist(javaTool);
+
+        assertThat(toolService.findNameById(javaTool.getId())).isEqualTo(java);
+    }
+
+
 }
