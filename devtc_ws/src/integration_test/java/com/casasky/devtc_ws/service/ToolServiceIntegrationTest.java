@@ -55,6 +55,17 @@ class ToolServiceIntegrationTest extends BaseIntegrationTest {
 
 
     @Test
+    void doesExistName() {
+        var java = "java";
+        assertThat(toolService.doesExist(java)).isFalse();
+
+        var tool = new Tool(java);
+        toolService.persist(tool);
+
+        assertThat(toolService.doesExist(java)).isTrue();
+    }
+
+    @Test
     void findIdByName() {
         var java = "java";
         var javaTool = new Tool(java);

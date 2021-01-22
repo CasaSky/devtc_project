@@ -38,6 +38,10 @@ public class ToolService extends TemplateBaseService<Tool> {
         return doesExist(Tool.class, id);
     }
 
+    boolean doesExist(String name) {
+        return findIdByName(name) != null;
+    }
+
 
     Long findIdByName(String name) {
         return em.createQuery("select t.id from Tool t where t.name = :name", Long.class)

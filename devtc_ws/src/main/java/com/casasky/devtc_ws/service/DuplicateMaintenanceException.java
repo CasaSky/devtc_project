@@ -9,8 +9,8 @@ class DuplicateMaintenanceException extends RuntimeException {
     private static final long serialVersionUID = -6125547315340135858L;
 
 
-    DuplicateMaintenanceException(Long toolId) {
-        super(format("The maintainer has already a maintenance with the same tool id %s - try with a new maintenance revision", toolId));
+    DuplicateMaintenanceException(String toolName) {
+        super(format("The maintainer has already a maintenance with the same tool name %s - try with a new maintenance revision", toolName));
     }
 
 }

@@ -11,6 +11,8 @@ import requests
 import urllib3
 
 import managed_tool
+from maintenance import Maintenance
+from tool import Tool
 
 HOME_PATH = os.environ.get("HOME")
 DEVTC_HOME_PATH = "{}/.devtc".format(HOME_PATH)
@@ -173,6 +175,18 @@ def process_tool(name, process):
         usage()
 
 
+def process_t(tool):
+    url = "http://localhost:9090/tools"
+
+    requests.post(url, tool.json(), headers={'Content-Type': "application/json"})
+
+
+def process_m(tool_name, maintenance):
+    url = "http://localhost:9090/tools/{}/maintenance".format(tool_name)
+
+    requests.post(url, maintenance.json(), headers={'Content-Type': "application/json"})
+
+
 def download(url, last_version_path, package_extension):
     print("Downloading tool to {}...".format(last_version_path))
 
@@ -249,10 +263,14 @@ def usage():
           "devtc_app.py remove               Removes devtc with all installed tools\n" +
           "devtc_app.py install terraform    Installs terraform tool\n" +
           "devtc_app.py remove terraform     Removes terraform tool\n" +
+          "devtc_app.py t                    Creates a new tool\n" +
+          "devtc_app.py m                    Creates a new maintenance for a tool\n" +
           "\n" +
           "Main commands:\n" +
-          "install     Prepare your working directory for other commands\n" +
-          "remove      Check whether the configuration is valid"
+          "install     Installs a tool\n" +
+          "remove      Removes a tool\n" +
+          "t           Creates a new tool\n" +
+          "m           Creates a new maintenance"
           )
 
 
@@ -261,7 +279,25 @@ number_of_commands = len(commands)
 if number_of_commands == 1:
     usage()
 elif number_of_commands == 2:
-    process_devtc(commands[1])
+    cm = commands[1]
+    if cm == "devtc":
+        process_devtc(cm)
+    elif cm == "t":
+        # todo read from stdin
+        tool_name_in = "terraform"
+        process_t(Tool(tool_name_in))
+    elif cm == "m":
+        # todo read from stdin
+        tool_name_in = "terraform"
+        maintainer_name = "pythonClient"
+        docs_url = "https://www.terraform.io/docs"
+        download_url_template = "https://releases.hashicorp.com/terraform/{release-version}/terraform_{release-version}_{platform-code}.{package-extension}"
+        package_binary_path_template = "terraform"
+        package_extension = "zip"
+        release_version = "0.14.5"
+        supported_platform_codes = ["linux_amd64", "windows_amd64"]
+        instructions = None
+        process_m(tool_name_in, Maintenance(maintainer_name, docs_url, download_url_template, package_binary_path_template, package_extension, release_version, supported_platform_codes, instructions))
 elif number_of_commands == 3:
     process_tool(commands[1], commands[2])
 else:

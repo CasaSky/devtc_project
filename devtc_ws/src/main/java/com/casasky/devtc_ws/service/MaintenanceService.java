@@ -29,13 +29,14 @@ public class MaintenanceService extends TemplateBaseService<Maintenance> {
     }
 
 
-    public void create(Long toolId, MaintenanceDto maintenance) {
-        if (!toolService.doesExist(toolId)) {
-            throw new ToolNotFoundException(toolId);
+    public void create(String toolName, MaintenanceDto maintenance) {
+        if (!toolService.doesExist(toolName)) {
+            throw new ToolNotFoundException(toolName);
         }
 
+        Long toolId = toolService.findIdByName(toolName);
         if (isDuplicate(toolId, maintenance.maintainerName)) {
-            throw new DuplicateMaintenanceException(toolId);
+            throw new DuplicateMaintenanceException(toolName);
         }
 
         save(maintenance.toEntity(toolId));

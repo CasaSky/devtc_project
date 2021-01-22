@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 
 @RestController
-@RequestMapping("tools/{toolId}/maintenance")
+@RequestMapping("tools/{name}/maintenance")
 public class MaintenanceController {
 
     @Autowired
@@ -22,8 +22,8 @@ public class MaintenanceController {
 
     //TODO add jackarta validation
     @PostMapping
-    public ResponseEntity<?> create(@PathVariable Long toolId, @RequestBody MaintenanceDto maintenance) {
-        maintenanceService.create(toolId, maintenance);
+    public ResponseEntity<?> create(@PathVariable String name, @RequestBody MaintenanceDto maintenance) {
+        maintenanceService.create(name, maintenance);
         //TODO return created with uri ;)
         return ResponseEntity.ok().build();
     }
