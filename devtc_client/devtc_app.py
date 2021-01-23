@@ -1,3 +1,4 @@
+import json
 import os
 import shutil
 import stat
@@ -283,19 +284,17 @@ elif number_of_commands == 2:
     if cm == "devtc":
         process_devtc(cm)
     elif cm == "t":
-        # todo read from stdin
-        tool_name_in = "terraform"
+        tool_name_in = input("Enter tool name:\n")
         process_t(Tool(tool_name_in))
     elif cm == "m":
-        # todo read from stdin
-        tool_name_in = "terraform"
-        maintainer_name = "pythonClient"
-        docs_url = "https://www.terraform.io/docs"
-        download_url_template = "https://releases.hashicorp.com/terraform/{release-version}/terraform_{release-version}_{platform-code}.{package-extension}"
-        package_binary_path_template = "terraform"
-        package_extension = "zip"
-        release_version = "0.14.5"
-        supported_platform_codes = ["linux_amd64", "windows_amd64"]
+        tool_name_in = input("Enter tool name:\n")
+        maintainer_name = input("Enter maintainer name:\n")
+        docs_url = input("Enter docs url:\n")
+        download_url_template = input("Enter download url template for example {}:\n".format("https://host/tool-{release-version}-{platform-code}.{package-extension}"))
+        package_binary_path_template = input("Enter binary path template for example {}:\n".format("tool-{release-version}"))
+        package_extension = input("Enter package extension of binaries:\n")
+        release_version = input("Enter last release version:\n")
+        supported_platform_codes = json.loads(input("Enter platform codes as json array for example {}:\n".format(["x64-linux", "x64-windows"])))
         instructions = None
         process_m(tool_name_in, Maintenance(maintainer_name, docs_url, download_url_template, package_binary_path_template, package_extension, release_version, supported_platform_codes, instructions))
 elif number_of_commands == 3:
