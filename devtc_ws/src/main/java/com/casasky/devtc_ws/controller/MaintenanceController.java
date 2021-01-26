@@ -1,6 +1,8 @@
 package com.casasky.devtc_ws.controller;
 
 
+import javax.validation.Valid;
+
 import com.casasky.devtc_ws.service.MaintenanceDto;
 import com.casasky.devtc_ws.service.MaintenanceService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,9 +22,8 @@ public class MaintenanceController {
     private MaintenanceService maintenanceService;
 
 
-    //TODO add jackarta validation
     @PostMapping
-    public ResponseEntity<?> create(@PathVariable String name, @RequestBody MaintenanceDto maintenance) {
+    public ResponseEntity<?> create(@PathVariable String name, @RequestBody @Valid MaintenanceDto maintenance) {
         maintenanceService.create(name, maintenance);
         //TODO return created with uri ;)
         return ResponseEntity.ok().build();

@@ -22,9 +22,6 @@ class ToolUpdater {
     @Autowired
     private MaintenanceService maintenanceService;
 
-    @Autowired
-    private UrlExpander urlExpander;
-
     private static final String ALL_VERSION_PARTS = "\\d+";
 
 
@@ -34,10 +31,9 @@ class ToolUpdater {
 
 
     // Used only for mocking
-    ToolUpdater(WebClient webClient, MaintenanceService maintenanceService, UrlExpander urlExpander) {
+    ToolUpdater(WebClient webClient, MaintenanceService maintenanceService) {
         this.webClient = webClient;
         this.maintenanceService = maintenanceService;
-        this.urlExpander = urlExpander;
     }
 
 
@@ -78,7 +74,7 @@ class ToolUpdater {
                 .packageExtension(updateInput.packageExtension)
                 .downloadUrlTemplate(updateInput.downloadUrlTemplate)
                 .build();
-        return urlExpander.expandDownloadUrl(downloadUrlInput);
+        return UrlExpander.expandDownloadUrl(downloadUrlInput);
     }
 
 

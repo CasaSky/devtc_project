@@ -9,6 +9,9 @@ import javax.persistence.EntityManager;
 
 import com.casasky.core.service.TemplateBaseService;
 import com.casasky.devtc_ws.entity.Maintenance;
+import com.casasky.devtc_ws.service.exception.DuplicateMaintenanceException;
+import com.casasky.devtc_ws.service.exception.MaintenanceNotFoundException;
+import com.casasky.devtc_ws.service.exception.ToolNotFoundException;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,9 +23,6 @@ public class MaintenanceService extends TemplateBaseService<Maintenance> {
     @Autowired
     private ToolService toolService;
 
-    @Autowired
-    private UrlExpander urlExpander;
-
 
     public MaintenanceService(EntityManager em) {
         super(em);
@@ -30,6 +30,8 @@ public class MaintenanceService extends TemplateBaseService<Maintenance> {
 
 
     public void create(String toolName, MaintenanceDto maintenance) {
+        maintenance.preProcess();
+
         if (!toolService.doesExist(toolName)) {
             throw new ToolNotFoundException(toolName);
         }
@@ -86,7 +88,7 @@ public class MaintenanceService extends TemplateBaseService<Maintenance> {
                         .anyMatch(p -> p.contains(selectedPlatform)))
                 .map(m -> ManagedToolDto.builder()
                         .name(toolService.findNameById(m.getToolId()))
-                        .downloadUrl(urlExpander.expandDownloadUrl(UrlExpander.DownloadUrlInput.builder()
+                        .downloadUrl(UrlExpander.expandDownloadUrl(UrlExpander.DownloadUrlInput.builder()
                                 .releaseVersion(m.getReleaseVersion())
                                 .selectedPlatformCode(m.getSupportedPlatformCodes().stream()
                                         .filter(p -> p.contains(selectedPlatform))
@@ -96,7 +98,7 @@ public class MaintenanceService extends TemplateBaseService<Maintenance> {
                                 .downloadUrlTemplate(m.getDownloadUrlTemplate())
                                 .build()))
                         .lastReleaseVersion(m.getReleaseVersion())
-                        .packageBinaryPath(urlExpander.expandBinaryPath(UrlExpander.BinaryPathInput.builder()
+                        .packageBinaryPath(UrlExpander.expandBinaryPath(UrlExpander.BinaryPathInput.builder()
                                 .releaseVersion(m.getReleaseVersion())
                                 .binaryPathTemplate(m.getPackageBinaryPathTemplate())
                                 .build()))
@@ -115,7 +117,7 @@ public class MaintenanceService extends TemplateBaseService<Maintenance> {
                 .orElseThrow(() -> new MaintenanceNotFoundException(name, selectedPlatform));
         return ManagedToolDto.builder()
                 .name(name)
-                .downloadUrl(urlExpander.expandDownloadUrl(UrlExpander.DownloadUrlInput.builder()
+                .downloadUrl(UrlExpander.expandDownloadUrl(UrlExpander.DownloadUrlInput.builder()
                         .releaseVersion(maintenance.getReleaseVersion())
                         .selectedPlatformCode(maintenance.getSupportedPlatformCodes().stream()
                                 .filter(p -> StringUtils.containsIgnoreCase(p, selectedPlatform))
@@ -125,7 +127,7 @@ public class MaintenanceService extends TemplateBaseService<Maintenance> {
                         .downloadUrlTemplate(maintenance.getDownloadUrlTemplate())
                         .build()))
                 .lastReleaseVersion(maintenance.getReleaseVersion())
-                .packageBinaryPath(urlExpander.expandBinaryPath(UrlExpander.BinaryPathInput.builder()
+                .packageBinaryPath(UrlExpander.expandBinaryPath(UrlExpander.BinaryPathInput.builder()
                         .releaseVersion(maintenance.getReleaseVersion())
                         .binaryPathTemplate(maintenance.getPackageBinaryPathTemplate())
                         .build()))

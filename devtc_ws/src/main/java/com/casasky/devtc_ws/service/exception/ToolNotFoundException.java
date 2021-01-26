@@ -1,10 +1,10 @@
-package com.casasky.devtc_ws.service;
+package com.casasky.devtc_ws.service.exception;
 
 
 import static java.lang.String.format;
 
 
-class ToolNotFoundException extends RuntimeException {
+public class ToolNotFoundException extends GlobalRuntimeException {
 
     private static final long serialVersionUID = 7415557910443800657L;
 
@@ -14,7 +14,7 @@ class ToolNotFoundException extends RuntimeException {
     }
 
 
-    ToolNotFoundException(String name) {
+    public ToolNotFoundException(String name) {
         super(format("Tool with name %s not found", name));
     }
 

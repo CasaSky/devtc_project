@@ -18,9 +18,6 @@ class MaintenanceServiceIntegrationTest extends BaseIntegrationTest {
     @Autowired
     private MaintenanceService maintenanceService;
 
-    @Autowired
-    private UrlExpander urlExpander;
-
 
     @Test
     void persistence() {
@@ -110,56 +107,23 @@ class MaintenanceServiceIntegrationTest extends BaseIntegrationTest {
         var expectedManagedJava = ManagedToolDto.builder()
                 .name(java.getName())
                 .lastReleaseVersion(javaMaintenance.getReleaseVersion())
-                .packageBinaryPath(urlExpander.expandBinaryPath(UrlExpander.BinaryPathInput.builder()
-                        .releaseVersion(javaMaintenance.getReleaseVersion())
-                        .binaryPathTemplate(javaMaintenance.getPackageBinaryPathTemplate())
-                        .build()))
+                .packageBinaryPath(expectedExpandedBinaryPath(javaMaintenance))
                 .packageExtension(javaMaintenance.getPackageExtension())
-                .downloadUrl(urlExpander.expandDownloadUrl(UrlExpander.DownloadUrlInput.builder()
-                        .releaseVersion(javaMaintenance.getReleaseVersion())
-                        .selectedPlatformCode(javaMaintenance.getSupportedPlatformCodes().stream()
-                                .filter(p -> p.contains(selectedPlatform))
-                                .findAny()
-                                .orElseThrow())
-                        .packageExtension(javaMaintenance.getPackageExtension().getValue())
-                        .downloadUrlTemplate(javaMaintenance.getDownloadUrlTemplate())
-                        .build()))
+                .downloadUrl(expectedExpandedDownloadUrl(javaMaintenance, selectedPlatform))
                 .build();
         var expectedManagedTerraform = ManagedToolDto.builder()
                 .name(terraform.getName())
                 .lastReleaseVersion(terraformMaintenance.getReleaseVersion())
-                .packageBinaryPath(urlExpander.expandBinaryPath(UrlExpander.BinaryPathInput.builder()
-                        .releaseVersion(terraformMaintenance.getReleaseVersion())
-                        .binaryPathTemplate(terraformMaintenance.getPackageBinaryPathTemplate())
-                        .build()))
+                .packageBinaryPath(expectedExpandedBinaryPath(terraformMaintenance))
                 .packageExtension(terraformMaintenance.getPackageExtension())
-                .downloadUrl(urlExpander.expandDownloadUrl(UrlExpander.DownloadUrlInput.builder()
-                        .releaseVersion(terraformMaintenance.getReleaseVersion())
-                        .selectedPlatformCode(terraformMaintenance.getSupportedPlatformCodes().stream()
-                                .filter(p -> p.contains(selectedPlatform))
-                                .findAny()
-                                .orElseThrow())
-                        .packageExtension(terraformMaintenance.getPackageExtension().getValue())
-                        .downloadUrlTemplate(terraformMaintenance.getDownloadUrlTemplate())
-                        .build()))
+                .downloadUrl(expectedExpandedDownloadUrl(terraformMaintenance, selectedPlatform))
                 .build();
         var expectedManagedVault = ManagedToolDto.builder()
                 .name(vault.getName())
                 .lastReleaseVersion(vaultMaintenance.getReleaseVersion())
-                .packageBinaryPath(urlExpander.expandBinaryPath(UrlExpander.BinaryPathInput.builder()
-                        .releaseVersion(vaultMaintenance.getReleaseVersion())
-                        .binaryPathTemplate(vaultMaintenance.getPackageBinaryPathTemplate())
-                        .build()))
+                .packageBinaryPath(expectedExpandedBinaryPath(vaultMaintenance))
                 .packageExtension(vaultMaintenance.getPackageExtension())
-                .downloadUrl(urlExpander.expandDownloadUrl(UrlExpander.DownloadUrlInput.builder()
-                        .releaseVersion(vaultMaintenance.getReleaseVersion())
-                        .selectedPlatformCode(vaultMaintenance.getSupportedPlatformCodes().stream()
-                                .filter(p -> p.contains(selectedPlatform))
-                                .findAny()
-                                .orElseThrow())
-                        .packageExtension(vaultMaintenance.getPackageExtension().getValue())
-                        .downloadUrlTemplate(vaultMaintenance.getDownloadUrlTemplate())
-                        .build()))
+                .downloadUrl(expectedExpandedDownloadUrl(vaultMaintenance, selectedPlatform))
                 .build();
         assertThat(all).usingRecursiveFieldByFieldElementComparator()
                 .containsExactlyInAnyOrder(expectedManagedJava, expectedManagedTerraform, expectedManagedVault);
@@ -192,20 +156,9 @@ class MaintenanceServiceIntegrationTest extends BaseIntegrationTest {
         var expectedManagedTool = ManagedToolDto.builder()
                 .name(java.getName())
                 .lastReleaseVersion(javaMaintenance.getReleaseVersion())
-                .packageBinaryPath(urlExpander.expandBinaryPath(UrlExpander.BinaryPathInput.builder()
-                        .releaseVersion(javaMaintenance.getReleaseVersion())
-                        .binaryPathTemplate(javaMaintenance.getPackageBinaryPathTemplate())
-                        .build()))
+                .packageBinaryPath(expectedExpandedBinaryPath(javaMaintenance))
                 .packageExtension(javaMaintenance.getPackageExtension())
-                .downloadUrl(urlExpander.expandDownloadUrl(UrlExpander.DownloadUrlInput.builder()
-                        .releaseVersion(javaMaintenance.getReleaseVersion())
-                        .selectedPlatformCode(javaMaintenance.getSupportedPlatformCodes().stream()
-                                .filter(p -> p.contains(selectedPlatform))
-                                .findAny()
-                                .orElseThrow())
-                        .packageExtension(javaMaintenance.getPackageExtension().getValue())
-                        .downloadUrlTemplate(javaMaintenance.getDownloadUrlTemplate())
-                        .build()))
+                .downloadUrl(expectedExpandedDownloadUrl(javaMaintenance, selectedPlatform))
                 .build();
 
         assertThat(managedTool).usingRecursiveComparison()
@@ -243,6 +196,32 @@ class MaintenanceServiceIntegrationTest extends BaseIntegrationTest {
 
         List<Maintenance> all = maintenanceService.findAllByToolId(java.getId());
         assertThat(all).usingRecursiveFieldByFieldElementComparator().containsExactlyInAnyOrder(javaMaintenance1, javaMaintenance2);
+    }
+
+
+    /**
+     * Helper Method that provides expected expanded download url based on a given maintenance and selected platform
+     */
+    private String expectedExpandedDownloadUrl(Maintenance maintenance, String selectedPlatform) {
+        return UrlExpander.expandDownloadUrl(UrlExpander.DownloadUrlInput.builder()
+                .releaseVersion(maintenance.getReleaseVersion())
+                .selectedPlatformCode(maintenance.getSupportedPlatformCodes().stream()
+                        .filter(p -> p.contains(selectedPlatform))
+                        .findAny()
+                        .orElseThrow())
+                .packageExtension(maintenance.getPackageExtension().getValue())
+                .downloadUrlTemplate(maintenance.getDownloadUrlTemplate())
+                .build());
+    }
+
+    /**
+     * Helper Method that provides expected expanded binary path based on a given maintenance
+     */
+    private String expectedExpandedBinaryPath(Maintenance maintenance) {
+        return UrlExpander.expandBinaryPath(UrlExpander.BinaryPathInput.builder()
+                .releaseVersion(maintenance.getReleaseVersion())
+                .binaryPathTemplate(maintenance.getPackageBinaryPathTemplate())
+                .build());
     }
 
 }

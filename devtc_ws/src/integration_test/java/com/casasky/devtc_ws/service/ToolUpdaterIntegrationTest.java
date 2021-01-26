@@ -27,9 +27,6 @@ class ToolUpdaterIntegrationTest extends BaseIntegrationTest {
     @Autowired
     private MaintenanceService maintenanceService;
 
-    @Autowired
-    private UrlExpander urlExpander;
-
     @MockBean
     private ExchangeFunction exchangeFunction;
 
@@ -39,7 +36,7 @@ class ToolUpdaterIntegrationTest extends BaseIntegrationTest {
         when(exchangeFunction.exchange(any(ClientRequest.class))).thenReturn(Mono.just(ClientResponse.create(HttpStatus.OK).build()));
 
         var mockedWebClient = WebClient.builder().exchangeFunction(exchangeFunction).build();
-        toolUpdater = new ToolUpdater(mockedWebClient, maintenanceService, urlExpander);
+        toolUpdater = new ToolUpdater(mockedWebClient, maintenanceService);
     }
 
 

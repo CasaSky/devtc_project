@@ -46,13 +46,19 @@ public class ToolService extends TemplateBaseService<Tool> {
     Long findIdByName(String name) {
         return em.createQuery("select t.id from Tool t where t.name = :name", Long.class)
                 .setParameter("name", name)
-                .getSingleResult();
+                .getResultList()
+                .stream()
+                .findFirst()
+                .orElse(null);
     }
 
     String findNameById(Long id) {
         return em.createQuery("select t.name from Tool t where t.id = :id", String.class)
                 .setParameter("id", id)
-                .getSingleResult();
+                .getResultList()
+                .stream()
+                .findFirst()
+                .orElse(null);
     }
 
 }
