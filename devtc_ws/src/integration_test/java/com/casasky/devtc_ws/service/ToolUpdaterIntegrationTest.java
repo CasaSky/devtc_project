@@ -72,9 +72,8 @@ class ToolUpdaterIntegrationTest extends BaseIntegrationTest {
 
     }
 
-
     @Test
-    void updateReleaseVersion() {
+    void update() {
 
         // source
         var tool = new Tool("java");
@@ -82,19 +81,25 @@ class ToolUpdaterIntegrationTest extends BaseIntegrationTest {
         Maintenance maintenance = MaintenanceDemo.java(tool.getId());
         persist(maintenance);
 
-        // input
-        String linux = maintenance.getSupportedPlatformCodes().iterator().next();
-        var updateInput = ToolUpdater.UpdateInput.builder()
-                .lastReleaseVersion(maintenance.getReleaseVersion())
-                .selectedPlatformCode(linux)
-                .packageExtension(maintenance.getPackageExtension().getValue())
-                .downloadUrlTemplate(maintenance.getDownloadUrlTemplate())
-                .build();
-
-        toolUpdater.updateReleaseVersion(maintenance.getId(), updateInput);
+        toolUpdater.update(maintenance.getId());
 
         var maintenanceFromDB = find(Maintenance.class, maintenance.getId());
         assertThat(maintenanceFromDB.getReleaseVersion()).isGreaterThan(maintenance.getReleaseVersion());
+    }
+
+
+    @Test
+    void check() {
+
+        // source
+        var tool = new Tool("java");
+        persist(tool);
+        Maintenance maintenance = MaintenanceDemo.java(tool.getId());
+        persist(maintenance);
+
+        String newReleaseVersion = toolUpdater.check(maintenance.getId());
+
+        assertThat(newReleaseVersion).isGreaterThan(maintenance.getReleaseVersion());
 
     }
 

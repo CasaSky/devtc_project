@@ -4,12 +4,12 @@ package com.casasky.devtc_ws.service;
 import java.util.List;
 
 import javax.persistence.EntityManager;
+import javax.persistence.PersistenceException;
 
 import com.casasky.core.service.TemplateBaseService;
-import com.casasky.devtc_ws.entity.Maintenance;
 import com.casasky.devtc_ws.entity.Tool;
+import com.casasky.devtc_ws.service.exception.DuplicateToolException;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 
 @Service
@@ -20,8 +20,16 @@ public class ToolService extends TemplateBaseService<Tool> {
     }
 
 
+    public void create(ToolDto tool) {
+        save(tool.entity());
+    }
+
     private void save(Tool entity) {
-        super.persist(entity);
+        try {
+            super.persist(entity);
+        } catch (PersistenceException e) {
+            throw new DuplicateToolException(entity.getName());
+        }
     }
 
 

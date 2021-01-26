@@ -32,7 +32,7 @@ public class ToolController {
     @PostMapping
     public ResponseEntity<?> create(@RequestBody @Valid ToolDto tool) {
 
-        toolService.persist(tool.entity());
+        toolService.create(tool);
         return ResponseEntity.noContent().build();
 
     }

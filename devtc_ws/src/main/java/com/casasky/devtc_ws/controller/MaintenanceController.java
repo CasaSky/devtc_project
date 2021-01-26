@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 
 @RestController
-@RequestMapping("tools/{name}/maintenance")
+@RequestMapping("tools/{toolName}/maintenance")
 public class MaintenanceController {
 
     @Autowired
@@ -29,15 +29,15 @@ public class MaintenanceController {
 
 
     @PostMapping
-    public ResponseEntity<?> create(@PathVariable String name, @RequestBody @Valid MaintenanceDto maintenance) {
-        Long maintenanceId = maintenanceService.create(name, maintenance);
-        return ResponseEntity.created(maintenanceURI(name, maintenanceId))
+    public ResponseEntity<?> create(@PathVariable String toolName, @RequestBody @Valid MaintenanceDto maintenance) {
+        Long maintenanceId = maintenanceService.create(toolName, maintenance);
+        return ResponseEntity.created(maintenanceURI(toolName, maintenanceId))
                 .build();
     }
 
-    @GetMapping(path = "{id}")
-    public ResponseEntity<?> find(@PathVariable String name, @PathVariable Long id) {
-        return ResponseEntity.ok(maintenanceService.find(id));
+    @GetMapping(path = "{maintenanceId}")
+    public ResponseEntity<?> find(@PathVariable String toolName, @PathVariable Long maintenanceId) {
+        return ResponseEntity.ok(maintenanceService.find(maintenanceId));
     }
 
 

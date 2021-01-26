@@ -3,10 +3,13 @@ package com.casasky.devtc_ws.service;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Predicate;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.casasky.devtc_ws.entity.Maintenance;
+import com.casasky.devtc_ws.service.exception.PlatformCodeNotFoundException;
 import lombok.Builder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -15,7 +18,7 @@ import reactor.core.publisher.Mono;
 
 
 @Component
-class ToolUpdater {
+public class ToolUpdater {
 
     private final WebClient webClient;
 
@@ -77,10 +80,36 @@ class ToolUpdater {
         return UrlExpander.expandDownloadUrl(downloadUrlInput);
     }
 
-
-    public void updateReleaseVersion(Long id, UpdateInput updateInput) {
+    public AtomicBoolean update(Long maintenanceId) {
+        Maintenance maintenance = maintenanceService.find(maintenanceId);
+        AtomicBoolean updated = new AtomicBoolean(false);
+        // any supported platform code is enough to process the update
+        String experimentPlatformCode = maintenance.getSupportedPlatformCodes().iterator().next();
+        var updateInput = updateInput(maintenance, experimentPlatformCode);
         String newReleaseVersion = findHighestNewReleaseVersion(updateInput);
-        maintenanceService.updateReleaseVersion(id, newReleaseVersion);
+        if (newReleaseVersion.compareTo(updateInput.lastReleaseVersion) > 0) {
+            maintenanceService.updateReleaseVersion(maintenanceId, newReleaseVersion);
+            updated.set(true);
+        }
+        return updated;
+    }
+
+    private UpdateInput updateInput(Maintenance maintenance, String selectedPlatformCode) {
+        return UpdateInput.builder()
+                .lastReleaseVersion(maintenance.getReleaseVersion())
+                .selectedPlatformCode(selectedPlatformCode)
+                .packageExtension(maintenance.getPackageExtension().getValue())
+                .downloadUrlTemplate(maintenance.getDownloadUrlTemplate())
+                .build();
+    }
+
+
+    public String check(Long maintenanceId) {
+        Maintenance maintenance = maintenanceService.find(maintenanceId);
+        // any supported platform code is enough to process the update
+        String experimentPlatformCode = maintenance.getSupportedPlatformCodes().iterator().next();
+        var updateInput = updateInput(maintenance, experimentPlatformCode);
+        return findHighestNewReleaseVersion(updateInput);
     }
 
 

@@ -65,6 +65,9 @@ public class MaintenanceService extends TemplateBaseService<Maintenance> {
     }
 
 
+    /**
+     * notice: used only in ToolUpdater - must be public in order to commit changes
+     */
     public void updateReleaseVersion(Long id, String newReleaseVersion) {
         Maintenance maintenance = find(id);
         maintenance.updateReleaseVersion(newReleaseVersion);
