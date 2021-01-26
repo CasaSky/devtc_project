@@ -29,7 +29,7 @@ public class MaintenanceService extends TemplateBaseService<Maintenance> {
     }
 
 
-    public void create(String toolName, MaintenanceDto maintenance) {
+    public Long create(String toolName, MaintenanceDto maintenance) {
         maintenance.preProcess();
 
         if (!toolService.doesExist(toolName)) {
@@ -41,12 +41,13 @@ public class MaintenanceService extends TemplateBaseService<Maintenance> {
             throw new DuplicateMaintenanceException(toolName);
         }
 
-        save(maintenance.toEntity(toolId));
+        return save(maintenance.toEntity(toolId));
     }
 
 
-    private void save(Maintenance entity) {
+    private Long save(Maintenance entity) {
         super.persist(entity);
+        return entity.getId();
     }
 
 
@@ -55,7 +56,7 @@ public class MaintenanceService extends TemplateBaseService<Maintenance> {
     }
 
 
-    Maintenance find(Long id) {
+    public Maintenance find(Long id) {
         Maintenance maintenance = find(Maintenance.class, id);
         if (maintenance == null) {
             throw new MaintenanceNotFoundException(id);

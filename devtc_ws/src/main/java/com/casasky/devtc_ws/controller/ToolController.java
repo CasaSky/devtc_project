@@ -4,6 +4,8 @@ package com.casasky.devtc_ws.controller;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import javax.validation.Valid;
+
 import com.casasky.devtc_ws.entity.Tool;
 import com.casasky.devtc_ws.service.ToolDto;
 import com.casasky.devtc_ws.service.ToolService;
@@ -28,7 +30,7 @@ public class ToolController {
 
 
     @PostMapping
-    public ResponseEntity<?> create(@RequestBody ToolDto tool) {
+    public ResponseEntity<?> create(@RequestBody @Valid ToolDto tool) {
 
         toolService.persist(tool.entity());
         return ResponseEntity.noContent().build();

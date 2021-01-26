@@ -8,6 +8,8 @@ import java.util.stream.Collectors;
 import com.casasky.devtc_ws.service.exception.GlobalRuntimeException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -18,6 +20,8 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 
 @ControllerAdvice
 public class GlobalResponseExceptionHandler {
+
+    private static final Logger LOG = LogManager.getLogger();
 
     @ExceptionHandler(GlobalRuntimeException.class)
     public ResponseEntity<?> handle(GlobalRuntimeException e) {
@@ -48,6 +52,7 @@ public class GlobalResponseExceptionHandler {
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<?> handle(Exception e) {
+        LOG.error(e);
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .build();
     }
